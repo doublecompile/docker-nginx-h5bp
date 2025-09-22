@@ -11,12 +11,14 @@ nginx_major_version=${nginx_full_version%%.*}
 nginx_minor_version=${nginx_full_version%.*}
 
 echo "type=raw,value=$nginx_full_version-$variant"
-echo "type=raw,value=$nginx_major_version-$variant"
 echo "type=raw,value=$nginx_minor_version-$variant"
-echo "type=raw,value=$variant"
 echo "type=raw,value=$nginx_full_version-alpine$alpine_minor_version-slim"
-echo "type=raw,value=$nginx_major_version-alpine$alpine_minor_version-slim"
 echo "type=raw,value=$nginx_minor_version-alpine$alpine_minor_version-slim"
-echo "type=raw,value=alpine$alpine_minor_version-slim"
 echo "type=raw,value=$nginx_branch-$variant"
 echo "type=raw,value=$nginx_branch-alpine$alpine_minor_version-slim"
+if [ "$nginx_branch" = "mainline" ]; then
+  echo "type=raw,value=$nginx_major_version-$variant"
+  echo "type=raw,value=$nginx_major_version-alpine$alpine_minor_version-slim"
+  echo "type=raw,value=alpine$alpine_minor_version-slim"
+  echo "type=raw,value=$variant"
+fi
