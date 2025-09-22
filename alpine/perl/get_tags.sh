@@ -1,10 +1,12 @@
 #!/bin/sh
 # Usage: ./get_tags.sh $image_name $nginx_branch
+set -e
 nginx_branch=$2
+platform=${IMAGE_PLATFORM:-linux/amd64}
 variant="alpine-perl"
-alpine_full_version=$(docker run --rm $1 cat /etc/os-release | grep VERSION_ID | cut -d'=' -f2)
+alpine_full_version=$(docker run --platform $platform --rm $1 cat /etc/os-release | grep VERSION_ID | cut -d'=' -f2)
 alpine_minor_version=${alpine_full_version%.*}
-nginx_full_version=$(docker run --rm $1 sh -c 'echo $NGINX_VERSION')
+nginx_full_version=$(docker run --platform $platform --rm $1 sh -c 'echo $NGINX_VERSION')
 nginx_major_version=${nginx_full_version%%.*}
 nginx_minor_version=${nginx_full_version%.*}
 

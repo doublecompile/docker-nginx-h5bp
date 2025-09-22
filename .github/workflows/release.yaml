@@ -92,6 +92,7 @@ jobs:
         run: |
           mkdir -p /tmp/digests /tmp/tags
           digest="${{ steps.build.outputs.digest }}"
+          export IMAGE_PLATFORM="${{ matrix.platform }}"
           filename="/tmp/digests/${digest#sha256:}"
           touch "$filename"
           image="${{ env.REGISTRY_IMAGE }}@$digest"
