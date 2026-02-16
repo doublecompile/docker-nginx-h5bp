@@ -1,0 +1,153 @@
+## mainline
+
+- $nginx_full_version
+- $name
+- ${nginx_major_version}
+- ${nginx_minor_version}
+- latest
+- ${nginx_full_version}-${debian_codename}
+- ${name}-${debian_codename}
+- ${nginx_major_version}-${debian_codename}
+- ${nginx_minor_version}-${debian_codename}
+- ${debian_codename}
+
+## mainline-perl
+
+- ${nginx_full_version}-perl
+- ${name}-perl
+- ${nginx_major_version}-perl
+- ${nginx_minor_version}-perl
+- perl
+- ${nginx_full_version}-${debian_codename}-perl
+- ${name}-${debian_codename}-perl
+- ${nginx_major_version}-${debian_codename}-perl
+- ${nginx_minor_version}-${debian_codename}-perl
+- ${debian_codename}-perl⁠
+
+## mainline-otel
+
+- ${nginx_full_version}-otel
+- ${name}-otel
+- ${nginx_major_version}-otel
+- ${nginx_minor_version}-otel
+- otel
+- ${nginx_full_version}-${debian_codename}-otel
+- ${name}-${debian_codename}-otel
+- ${nginx_major_version}-${debian_codename}-otel
+- ${nginx_minor_version}-${debian_codename}-otel
+- ${debian_codename}-otel⁠
+
+## mainline-alpine
+
+- ${nginx_full_version}-alpine
+- ${name}-alpine
+- ${nginx_major_version}-alpine
+- ${nginx_minor_version}-alpine
+- alpine
+- ${nginx_full_version}-${alpine_version}
+- ${name}-${alpine_version}
+- ${nginx_major_version}-${alpine_version}
+- ${nginx_minor_version}-${alpine_version}
+- ${alpine_version}⁠
+
+## mainline-alpine-perl
+
+- ${nginx_full_version}-alpine-perl
+- ${name}-alpine-perl
+- ${nginx_major_version}-alpine-perl
+- ${nginx_minor_version}-alpine-perl
+- alpine-perl
+- ${nginx_full_version}-${alpine_version}-perl
+- ${name}-${alpine_version}-perl
+- ${nginx_major_version}-${alpine_version}-perl
+- ${nginx_minor_version}-${alpine_version}-perl
+- ${alpine_version}-perl⁠
+
+## mainline-alpine-slim
+
+- ${nginx_full_version}-alpine-slim
+- ${name}-alpine-slim
+- ${nginx_major_version}-alpine-slim
+- ${nginx_minor_version}-alpine-slim
+- alpine-slim
+- ${nginx_full_version}-${alpine_version}-slim
+- ${name}-${alpine_version}-slim
+- ${nginx_major_version}-${alpine_version}-slim
+- ${nginx_minor_version}-${alpine_version}-slim
+- ${alpine_version}-slim⁠
+
+## mainline-alpine-otel
+
+- ${nginx_full_version}-alpine-otel
+- ${name}-alpine-otel
+- ${nginx_major_version}-alpine-otel
+- ${nginx_minor_version}-alpine-otel
+- alpine-otel
+- ${nginx_full_version}-${alpine_version}-otel
+- ${name}-${alpine_version}-otel
+- ${nginx_major_version}-${alpine_version}-otel
+- ${nginx_minor_version}-${alpine_version}-otel
+- ${alpine_version}-otel⁠
+
+## stable
+
+- ${nginx_full_version}
+- stable
+- ${nginx_minor_version}
+- ${nginx_full_version}-${debian_codename}
+- stable-${debian_codename}
+- ${nginx_minor_version}-${debian_codename}⁠
+
+## stable-perl
+
+- ${nginx_full_version}-perl
+- stable-perl
+- ${nginx_minor_version}-perl
+- ${nginx_full_version}-${debian_codename}-perl
+- stable-${debian_codename}-perl
+- ${nginx_minor_version}-${debian_codename}-perl⁠
+
+## stable-otel
+
+- ${nginx_full_version}-otel
+- stable-otel
+- ${nginx_minor_version}-otel
+- ${nginx_full_version}-${debian_codename}-otel
+- stable-${debian_codename}-otel
+- ${nginx_minor_version}-${debian_codename}-otel⁠
+
+## stable-alpine
+
+- ${nginx_full_version}-alpine
+- stable-alpine
+- ${nginx_minor_version}-alpine
+- ${nginx_full_version}-${alpine_version}
+- stable-${alpine_version}
+- ${nginx_minor_version}-${alpine_version}⁠
+
+## stable-alpine-perl
+
+- ${nginx_full_version}-alpine-perl
+- stable-alpine-perl
+- ${nginx_minor_version}-alpine-perl
+- ${nginx_full_version}-${alpine_version}-perl
+- stable-${alpine_version}-perl
+- ${nginx_minor_version}-${alpine_version}-perl⁠
+
+## stable-alpine-slim
+
+- ${nginx_full_version}-alpine-slim
+- stable-alpine-slim
+- ${nginx_minor_version}-alpine-slim
+- ${nginx_full_version}-${alpine_version}-slim
+- stable-${alpine_version}-slim
+- ${nginx_minor_version}-${alpine_version}-slim⁠
+
+## stable-alpine-otel
+
+- ${nginx_full_version}-alpine-otel
+- stable-alpine-otel
+- ${nginx_minor_version}-alpine-otel
+- ${nginx_full_version}-${alpine_version}-otel
+- stable-${alpine_version}-otel
+- ${nginx_minor_version}-${alpine_version}-otel⁠

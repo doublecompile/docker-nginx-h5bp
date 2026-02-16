@@ -1,0 +1,173 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+env:
+  REGISTRY_IMAGE: doublecompile/nginx-h5bp
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        nginx-branch:
+          - mainline
+          - stable
+        h5bp:
+          - 5.0.1
+        platform:
+          - "linux/amd64"
+          - "linux/arm64"
+        directory:
+          - "alpine"
+          - "alpine/otel"
+          - "alpine/perl"
+          - "alpine/slim"
+          - "debian"
+          - "debian/otel"
+          - "debian/perl"
+
+    steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+          variant=${{ matrix.directory }}
+          echo "DISTRO_VARIANT=${variant//\//-}" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: h5bp/server-configs-nginx
+          fetch-depth: 1
+          ref: ${{ matrix.h5bp }}
+          path: h5bp
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.directory }}/Dockerfile
+          build-args: |
+            NGINX_VERSION=${{ matrix.nginx-branch }}
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,push=true
+
+      - name: Export digest and tags
+        run: |
+          mkdir -p /tmp/digests /tmp/tags
+          digest="${{ steps.build.outputs.digest }}"
+          export IMAGE_PLATFORM="${{ matrix.platform }}"
+          filename="/tmp/digests/${digest#sha256:}"
+          touch "$filename"
+          image="${{ env.REGISTRY_IMAGE }}@$digest"
+          "./${{ matrix.directory }}/get_tags.sh" $image ${{ matrix.nginx-branch }} > "$filename"
+          cat "$filename"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ matrix.nginx-branch }}-${{ matrix.h5bp }}-${{ env.DISTRO_VARIANT }}-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  manifest:
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        nginx-branch:
+          - mainline
+          - stable
+        h5bp:
+          - 5.0.1
+        directory:
+          - "alpine"
+          - "alpine/otel"
+          - "alpine/perl"
+          - "alpine/slim"
+          - "debian"
+          - "debian/otel"
+          - "debian/perl"
+
+    steps:
+      - name: Prepare
+        run: |
+          variant=${{ matrix.directory }}
+          echo "DISTRO_VARIANT=${variant//\//-}" >> $GITHUB_ENV
+
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-${{ matrix.nginx-branch }}-${{ matrix.h5bp }}-${{ env.DISTRO_VARIANT }}*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Generate image tags
+        id: image_tags
+        run: |
+          hash=$(find /tmp/digests -type f | head -n 1)
+          echo "all_tags=$(cat $hash | jq --raw-input --compact-output --slurp)" >> $GITHUB_OUTPUT
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+          tags: ${{ fromJSON(steps.image_tags.outputs.all_tags) }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
