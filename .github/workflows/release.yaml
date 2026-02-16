@@ -137,7 +137,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: /tmp/digests
-          pattern: digests-${{ matrix.nginx-branch }}-${{ matrix.h5bp }}-${{ env.DISTRO_VARIANT }}*
+          pattern: digests-${{ matrix.nginx-branch }}-${{ matrix.h5bp }}-${{ env.DISTRO_VARIANT }}-linux-*
           merge-multiple: true
 
       - name: Set up Docker Buildx
