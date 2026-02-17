@@ -54,7 +54,12 @@ jobs:
           repository: h5bp/server-configs-nginx
           fetch-depth: 1
           ref: ${{ matrix.h5bp }}
-          path: h5bp
+          path: h5bp-git
+
+      - name: Modify the config
+        run: |
+          ./prepare.sh
+          rm -rf h5bp-git
 
       - name: Docker meta
         id: meta
@@ -100,7 +105,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digests-${{ matrix.nginx-branch }}-${{ matrix.h5bp }}-${{ env.DISTRO_VARIANT }}-${{ env.PLATFORM_PAIR }}
+          name: digests-${{ matrix.nginx-branch }}-${{ matrix.h5bp }}-${{ env.DISTRO_VARIANT }}-arch-${{ env.PLATFORM_PAIR }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
@@ -137,7 +142,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: /tmp/digests
-          pattern: digests-${{ matrix.nginx-branch }}-${{ matrix.h5bp }}-${{ env.DISTRO_VARIANT }}-linux-*
+          pattern: digests-${{ matrix.nginx-branch }}-${{ matrix.h5bp }}-${{ env.DISTRO_VARIANT }}-arch-*
           merge-multiple: true
 
       - name: Set up Docker Buildx
