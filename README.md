@@ -14,6 +14,10 @@ At this time, all images contain version 5.0.1 of the H5BP Server Configs.
 
 ## Versions and Tags Available
 
+```shell
+docker pull doublecompile/nginx-h5bp:latest
+```
+
 We create images for both branches of Nginx (i.e. `stable` and `mainline`) as well as all variants:
 
 - alpine
@@ -43,12 +47,14 @@ The H5BP Server Configs project ships with configuration for the default server 
 
 ### TLS
 
-The `h5bp/tls/certificate_files.conf` configuration file assumes your TLS certificates are located at `/etc/nginx/certs/default.crt` and `/etc/nginx/certs/default.key`. You can mount your certificates in this location. On Debian, you can leverage the "Snakeoil" certificates if untrusted certificates are acceptable.
+The `h5bp/tls/certificate_files.conf` configuration file assumes your TLS certificates are located at `/etc/nginx/certs/default.crt` and `/etc/nginx/certs/default.key`. You can mount your certificates in this location.
 
-```
-apt-get update \
-&& apt-get install -y --no-install-recommends ssl-cert \
-&& mkdir -p /etc/nginx/certs \
-&& ln -s /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/nginx/certs/default.crt \
-&& ln -s /etc/ssl/private/ssl-cert-snakeoil.key /etc/nginx/certs/default.key
+If you use the Debian-based images, you can leverage the "snakeoil" certificates if untrusted certificates are acceptable for your use case.
+
+```shell
+apt-get update
+apt-get install -y --no-install-recommends ssl-cert
+mkdir -p /etc/nginx/certs
+ln -s /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/nginx/certs/default.crt
+ln -s /etc/ssl/private/ssl-cert-snakeoil.key /etc/nginx/certs/default.key
 ```
