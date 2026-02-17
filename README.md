@@ -34,3 +34,21 @@ You can use any version tag that works for the `nginx` image itself. Here are a 
 - bookworm-perl
 
 Supported Architectures: `linux/amd64` and `linux/arm64`.
+
+## Configuration
+
+Add your site configuration in `/etc/nginx/conf.d`. You can use the files in `/etc/nginx/conf.d/templates` as examples.
+
+The H5BP Server Configs project ships with configuration for the default server to turn away requests for unknown hosts. If you'd like to use this behavior, delete the `default.conf` file and then remove the leading dot in the filename for both `.default.conf` and `.no-ssl.default.conf`.
+
+### TLS
+
+The `h5bp/tls/certificate_files.conf` configuration file assumes your TLS certificates are located at `/etc/nginx/certs/default.crt` and `/etc/nginx/certs/default.key`. You can mount your certificates in this location. On Debian, you can leverage the "Snakeoil" certificates if untrusted certificates are acceptable.
+
+```
+apt-get update \
+&& apt-get install -y --no-install-recommends ssl-cert \
+&& mkdir -p /etc/nginx/certs \
+&& ln -s /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/nginx/certs/default.crt \
+&& ln -s /etc/ssl/private/ssl-cert-snakeoil.key /etc/nginx/certs/default.key
+```
